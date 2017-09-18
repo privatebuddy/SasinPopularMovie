@@ -6,17 +6,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 /**
  * Created by Moondance on 9/18/2017 AD.
  */
 
 public class MovieRecycleViewAdapter extends RecyclerView.Adapter<MovieRecycleViewAdapter.MoviePictureViewHolder> {
 
-    public String[] MovieNameData;
+    public String[] MoviePicturePaths;
 
     public MovieRecycleViewAdapter(String[] adapterDataSet)
     {
-        MovieNameData = adapterDataSet;
+        MoviePicturePaths = adapterDataSet;
     }
 
     @Override
@@ -33,12 +35,13 @@ public class MovieRecycleViewAdapter extends RecyclerView.Adapter<MovieRecycleVi
     @Override
     public void onBindViewHolder(MoviePictureViewHolder holder, int position) {
 
-        holder.mMovieNameTextView.setText("This is "+MovieNameData[position]);
+        Picasso.with(holder.mMovieImageView.getContext()).load("http://image.tmdb.org/t/p/w500/"+MoviePicturePaths[position]).into(holder.mMovieImageView);
+        holder.mMovieNameTextView.setText("This is "+MoviePicturePaths[position]);
     }
 
     @Override
     public int getItemCount() {
-        return MovieNameData.length;
+        return MoviePicturePaths.length;
     }
 
     public static class MoviePictureViewHolder extends RecyclerView.ViewHolder {
