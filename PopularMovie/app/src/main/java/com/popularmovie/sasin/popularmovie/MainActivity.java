@@ -1,5 +1,7 @@
 package com.popularmovie.sasin.popularmovie;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,16 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieRecycleViewAdapter.MovieItemClickListener{
 
-    private RecyclerView moviePictueRecycleView;
+    private RecyclerView moviePictureRecycleView;
     private MovieRecycleViewAdapter moviePictureAdapter;
     private ProgressBar mLoadingIndicator;
 
@@ -33,22 +33,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
-        URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
-        new  MovieQueryTask().execute(movieAPI);
 
-        moviePictueRecycleView = (RecyclerView) findViewById(R.id.movie_picture_recycle_view);
+
+        moviePictureRecycleView = (RecyclerView) findViewById(R.id.movie_picture_recycle_view);
+
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+
+
 
         GridLayoutManager movieGridLayoutManager = new GridLayoutManager(this,2);
-        moviePictueRecycleView.setLayoutManager(movieGridLayoutManager);
+        moviePictureRecycleView.setLayoutManager(movieGridLayoutManager);
+
+        moviePictureAdapter = new MovieRecycleViewAdapter(this);
+
+
+        URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
+        new  MovieQueryTask().execute(movieAPI);
 
         Log.d("R",movieAPI.toString());
     }
 
     public void OnFinishFetchData() throws JSONException {
         Log.d("R",responseData);
-        moviePictureAdapter = new MovieRecycleViewAdapter(JSONMovie.GetMovieURLs(),JSONMovie.GetNames());
-        moviePictueRecycleView.setAdapter(moviePictureAdapter);
+
+        moviePictureAdapter.UpdateAdapterWithFetchData(JSONMovie.GetMovieURLs(),JSONMovie.GetNames());
+        moviePictureRecycleView.setAdapter(moviePictureAdapter);
+    }
+
+    @Override
+    public void OnClickViewHolder(int viewHolderPosition) {
+
+        Log.d("R",String.valueOf(viewHolderPosition));
+
+        Context context = MainActivity.this;
+        Class destinationActivity = MovieInfromationActivity.class;
+        Intent startChildActivityIntent = new Intent(context, destinationActivity);
+//
+//        startChildActivityIntent.putExtra(Intent.EXTRA_TEXT, textEntered);
+        startActivity(startChildActivityIntent);
     }
 
     public class MovieQueryTask extends AsyncTask<URL, Void, String> {

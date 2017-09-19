@@ -17,7 +17,19 @@ public class MovieRecycleViewAdapter extends RecyclerView.Adapter<MovieRecycleVi
     public String[] MoviePicturePaths;
     public String[] MovieNames;
 
-    public MovieRecycleViewAdapter(String[] adapterDataSet,String[] movieNameSet)
+    private final MovieItemClickListener ItemListener;
+
+    public MovieRecycleViewAdapter(MovieItemClickListener clickListener)
+    {
+        ItemListener = clickListener;
+    }
+
+    public interface MovieItemClickListener
+    {
+        void OnClickViewHolder(int viewHolderPosition);
+    }
+
+    public void UpdateAdapterWithFetchData(String[] adapterDataSet,String[] movieNameSet)
     {
         MoviePicturePaths = adapterDataSet;
         MovieNames = movieNameSet;
@@ -45,7 +57,7 @@ public class MovieRecycleViewAdapter extends RecyclerView.Adapter<MovieRecycleVi
         return MoviePicturePaths.length;
     }
 
-    public static class MoviePictureViewHolder extends RecyclerView.ViewHolder {
+    public class MoviePictureViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView mMovieNameTextView;
         public ImageView mMovieImageView;
@@ -54,6 +66,13 @@ public class MovieRecycleViewAdapter extends RecyclerView.Adapter<MovieRecycleVi
             super(view);
             mMovieImageView = view.findViewById(R.id.movie_picture_view);
             mMovieNameTextView = view.findViewById(R.id.movie_name_text_view);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            ItemListener.OnClickViewHolder(adapterPosition);
         }
     }
 
