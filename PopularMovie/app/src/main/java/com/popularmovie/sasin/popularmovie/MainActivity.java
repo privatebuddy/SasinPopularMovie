@@ -7,6 +7,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView moviePictueRecycleView;
     private MovieRecycleViewAdapter moviePictureAdapter;
 
+    private Menu settingMenu;
     String responseData = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
 //
         Log.d("R",movieAPI.toString());
-
-
 
         String[] DataSet = {"A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","A11","A12"};
         moviePictureAdapter = new MovieRecycleViewAdapter(DataSet);
@@ -103,5 +104,29 @@ public class MainActivity extends AppCompatActivity {
 //                showErrorMessage();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemThatWasClickedId = item.getItemId();
+
+        if (itemThatWasClickedId == R.id.action_sort_popular) {
+            URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
+            new  MovieQueryTask().execute(movieAPI);
+            return true;
+        }
+        if (itemThatWasClickedId == R.id.action_sort_top_rate) {
+            URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",1);
+            new  MovieQueryTask().execute(movieAPI);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
