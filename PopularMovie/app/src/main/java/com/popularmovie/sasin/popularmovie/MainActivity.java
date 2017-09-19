@@ -4,12 +4,12 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,14 +22,18 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView moviePictueRecycleView;
     private MovieRecycleViewAdapter moviePictureAdapter;
+    private ProgressBar mLoadingIndicator;
 
-    private Menu settingMenu;
+
+    JSONMovieConverter JSONMovie;
+
     String responseData = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
         URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
         new  MovieQueryTask().execute(movieAPI);
 
@@ -38,37 +42,12 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager movieGridLayoutManager = new GridLayoutManager(this,2);
         moviePictueRecycleView.setLayoutManager(movieGridLayoutManager);
 
-//
         Log.d("R",movieAPI.toString());
-
-        String[] DataSet = {"A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","A11","A12"};
-        moviePictureAdapter = new MovieRecycleViewAdapter(DataSet);
-        moviePictueRecycleView.setAdapter(moviePictureAdapter);
-
-
     }
 
-    public void DoAfterLoad() throws JSONException {
+    public void OnFinishFetchData() throws JSONException {
         Log.d("R",responseData);
-        JSONObject convertObject = null;
-        try {
-            convertObject  = new JSONObject(responseData);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JSONArray arrayMovie = convertObject.getJSONArray("results");
-
-
-        String[] DataSet = new String[arrayMovie.length()];
-        for (int i = 0;i < arrayMovie.length();i++)
-        {
-            JSONObject object = arrayMovie.getJSONObject(i);
-
-            DataSet[i] = object.getString("poster_path").toString();
-        }
-
-        moviePictureAdapter = new MovieRecycleViewAdapter(DataSet);
+        moviePictureAdapter = new MovieRecycleViewAdapter(JSONMovie.GetMovieURLs(),JSONMovie.GetNames());
         moviePictueRecycleView.setAdapter(moviePictureAdapter);
     }
 
@@ -95,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String fetchAPIResult) {
 //            mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (fetchAPIResult != null && !fetchAPIResult.equals("")) {
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                JSONMovie = new JSONMovieConverter(fetchAPIResult);
                 try {
-                    DoAfterLoad();
+                    OnFinishFetchData();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -117,11 +98,13 @@ public class MainActivity extends AppCompatActivity {
         int itemThatWasClickedId = item.getItemId();
 
         if (itemThatWasClickedId == R.id.action_sort_popular) {
+            mLoadingIndicator.setVisibility(View.VISIBLE);
             URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
             new  MovieQueryTask().execute(movieAPI);
             return true;
         }
         if (itemThatWasClickedId == R.id.action_sort_top_rate) {
+            mLoadingIndicator.setVisibility(View.VISIBLE);
             URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",1);
             new  MovieQueryTask().execute(movieAPI);
             return true;

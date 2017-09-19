@@ -15,10 +15,12 @@ import com.squareup.picasso.Picasso;
 public class MovieRecycleViewAdapter extends RecyclerView.Adapter<MovieRecycleViewAdapter.MoviePictureViewHolder> {
 
     public String[] MoviePicturePaths;
+    public String[] MovieNames;
 
-    public MovieRecycleViewAdapter(String[] adapterDataSet)
+    public MovieRecycleViewAdapter(String[] adapterDataSet,String[] movieNameSet)
     {
         MoviePicturePaths = adapterDataSet;
+        MovieNames = movieNameSet;
     }
 
     @Override
@@ -34,9 +36,8 @@ public class MovieRecycleViewAdapter extends RecyclerView.Adapter<MovieRecycleVi
 
     @Override
     public void onBindViewHolder(MoviePictureViewHolder holder, int position) {
-
         Picasso.with(holder.mMovieImageView.getContext()).load("http://image.tmdb.org/t/p/w500/"+MoviePicturePaths[position]).into(holder.mMovieImageView);
-        holder.mMovieNameTextView.setText("This is "+MoviePicturePaths[position]);
+        holder.mMovieNameTextView.setText(MovieNames[position]);
     }
 
     @Override
