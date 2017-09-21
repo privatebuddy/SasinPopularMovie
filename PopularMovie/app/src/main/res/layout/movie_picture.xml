@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="false"
-        app:srcCompat="@mipmap/ic_launcher" />
+        app:srcCompat="@mipmap/ic_launcher"
+        android:contentDescription="@string/movie_poster"/>
 
     <TextView
         android:id="@+id/movie_name_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="TextView"
         android:textAlignment="center"
         android:textSize="24sp" />
 

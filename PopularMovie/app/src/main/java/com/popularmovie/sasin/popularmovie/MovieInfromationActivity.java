@@ -1,10 +1,10 @@
 package com.popularmovie.sasin.popularmovie;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -46,7 +46,7 @@ public class MovieInfromationActivity extends AppCompatActivity {
 
             String movieID = intentThatStartedThisActivity.getStringExtra("MOVIE_ID");
 
-            URL singleMovieAPI = MovieNetworkUtils.buildUrlIndividual("54673070422b0dffc26a43c1ca31fa94",movieID);
+            URL singleMovieAPI = MovieNetworkUtils.buildUrlIndividual(movieID);
             new SingleMovieQueryTask().execute(singleMovieAPI);
         }
     }
@@ -57,6 +57,12 @@ public class MovieInfromationActivity extends AppCompatActivity {
         movieName.setText(JSONMovieObject.getString("original_title"));
         movieRating.setText(JSONMovieObject.getString("vote_average")+"/10");
         movieDetail.setText(JSONMovieObject.getString("overview"));
+    }
+
+
+    public void PrintError()
+    {
+        Log.e("Error Message","Error Async");
     }
 
     public class SingleMovieQueryTask extends AsyncTask<URL, Void, String> {
@@ -92,7 +98,7 @@ public class MovieInfromationActivity extends AppCompatActivity {
 
 
             } else {
-//                showErrorMessage();
+                PrintError();
             }
         }
     }

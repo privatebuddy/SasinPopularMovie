@@ -2,4 +2,5 @@
     <string name="app_name">PopularMovie</string>
     <string name="action_popular">Popular</string>
     <string name="action_top_rate">Top Rate</string>
+    <string name="movie_poster">Movie Poster</string>
 </resources>

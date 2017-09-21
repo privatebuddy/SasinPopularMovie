@@ -39,7 +39,7 @@ public class JSONMovieConverter {
         {
             JSONObject object = resultArray.getJSONObject(i);
 
-            DataSet[i] = object.getString("poster_path").toString();
+            DataSet[i] = object.getString("poster_path");
         }
 
         return DataSet;
@@ -55,7 +55,7 @@ public class JSONMovieConverter {
         {
             JSONObject object = resultArray.getJSONObject(i);
 
-            DataSet[i] = object.getString("original_title").toString();
+            DataSet[i] = object.getString("original_title");
         }
 
         return DataSet;
@@ -66,7 +66,7 @@ public class JSONMovieConverter {
         JSONArray resultArray = JSONObject.getJSONArray("results");
         JSONObject object = resultArray.getJSONObject(selectRow);
 
-        String returnID = object.getString("id").toString();
+        String returnID = object.getString("id");
         return returnID;
     }
 

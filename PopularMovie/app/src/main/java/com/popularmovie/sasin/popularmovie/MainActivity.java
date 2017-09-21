@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
         moviePictureAdapter = new MovieRecycleViewAdapter(this);
 
 
-        URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
+        URL movieAPI = MovieNetworkUtils.buildUrl(0);
         new  MovieQueryTask().execute(movieAPI);
 
         Log.d("R",movieAPI.toString());
@@ -79,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
     }
 
 
+    public void PrintError()
+    {
+        Log.e("Error Message","Error Async");
+    }
+
     public class MovieQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
                     e.printStackTrace();
                 }
             } else {
-//                showErrorMessage();
+                PrintError();
             }
         }
     }
@@ -125,13 +130,13 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
         int itemThatWasClickedId = item.getItemId();
 
         if (itemThatWasClickedId == R.id.action_sort_popular) {
-            URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
+            URL movieAPI = MovieNetworkUtils.buildUrl(0);
             new  MovieQueryTask().execute(movieAPI);
             return true;
         }
         if (itemThatWasClickedId == R.id.action_sort_top_rate) {
 
-            URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",1);
+            URL movieAPI = MovieNetworkUtils.buildUrl(1);
             new  MovieQueryTask().execute(movieAPI);
             return true;
         }
