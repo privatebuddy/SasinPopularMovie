@@ -61,5 +61,13 @@ public class JSONMovieConverter {
         return DataSet;
     }
 
+    public String GetSelectMovieID(int selectRow) throws JSONException {
+
+        JSONArray resultArray = JSONObject.getJSONArray("results");
+        JSONObject object = resultArray.getJSONObject(selectRow);
+
+        String returnID = object.getString("id").toString();
+        return returnID;
+    }
 
 }

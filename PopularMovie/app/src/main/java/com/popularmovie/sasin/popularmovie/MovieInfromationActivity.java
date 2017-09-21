@@ -1,51 +1,99 @@
 package com.popularmovie.sasin.popularmovie;
 
 import android.content.Intent;
+import android.media.Image;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class MovieInfromationActivity extends AppCompatActivity {
 
+    TextView movieName;
+    TextView movieRating;
+    TextView movieDetail;
+
+    ImageView movieImage;
+    JSONObject JSONMovieObject;
+
+    private ProgressBar mLoadingIndicator;
+    String responseData = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_infromation);
-//        mDisplayText = (TextView) findViewById(R.id.tv_display);
-//
-//        // COMPLETED (3) Use the getIntent method to store the Intent that started this Activity in a variable
-//        /*
-//         * Here is where all the magic happens. The getIntent method will give us the Intent that
-//         * started this particular Activity.
-//         */
-//        Intent intentThatStartedThisActivity = getIntent();
-//
-//        // COMPLETED (4) Create an if statement to check if this Intent has the extra we passed from MainActivity
-//        /*
-//         * Although there is always an Intent that starts any particular Activity, we can't
-//         * guarantee that the extra we are looking for was passed as well. Because of that, we need
-//         * to check to see if the Intent has the extra that we specified when we created the
-//         * Intent that we use to start this Activity. Note that this extra may not be present in
-//         * the Intent if this Activity was started by any other method.
-//         * */
-//        if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
-//            // COMPLETED (5) If the Intent contains the correct extra, retrieve the text
-//            /*
-//             * Now that we've checked to make sure the extra we are looking for is contained within
-//             * the Intent, we can extract the extra. To do that, we simply call the getStringExtra
-//             * method on the Intent. There are various other get*Extra methods you can call for
-//             * different types of data. Please feel free to explore those yourself.
-//             */
-//            String textEntered = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
-//
-//            // COMPLETED (6) If the Intent contains the correct extra, use it to set the TextView text
-//            /*
-//             * Finally, we can set the text of our TextView (using setText) to the text that was
-//             * passed to this Activity.
-//             */
-//            mDisplayText.setText(textEntered);
-//        }
+
+        movieName = (TextView) findViewById(R.id.movie_detail_name);
+        movieRating = (TextView) findViewById(R.id.movie_detail_rating);
+        movieDetail = (TextView) findViewById(R.id.movie_detail_detail);
+        movieImage = (ImageView)  findViewById(R.id.movie_detail_poster);
+        mLoadingIndicator = (ProgressBar)  findViewById(R.id.loading_indicator_movie);
+
+        Intent intentThatStartedThisActivity = getIntent();
+        if (intentThatStartedThisActivity.hasExtra("MOVIE_ID")) {
+
+
+            String movieID = intentThatStartedThisActivity.getStringExtra("MOVIE_ID");
+
+            URL singleMovieAPI = MovieNetworkUtils.buildUrlIndividual("54673070422b0dffc26a43c1ca31fa94",movieID);
+            new SingleMovieQueryTask().execute(singleMovieAPI);
+        }
     }
 
+    public void UpdateMovieData()  throws JSONException
+    {
+        Picasso.with(this).load("http://image.tmdb.org/t/p/w500/"+JSONMovieObject.getString("poster_path")).into(movieImage);
+        movieName.setText(JSONMovieObject.getString("original_title"));
+        movieRating.setText(JSONMovieObject.getString("vote_average")+"/10");
+        movieDetail.setText(JSONMovieObject.getString("overview"));
+    }
 
+    public class SingleMovieQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(URL... params) {
+            URL fetchAPIURL = params[0];
+            try {
+                responseData = MovieNetworkUtils.getResponseFromHttpUrl(fetchAPIURL);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return responseData;
+        }
+
+        @Override
+        protected void onPostExecute(String fetchAPIResult) {
+            if (fetchAPIResult != null && !fetchAPIResult.equals("")) {
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+                try {
+                    JSONMovieObject = new JSONObject(fetchAPIResult);
+                    UpdateMovieData();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            } else {
+//                showErrorMessage();
+            }
+        }
+    }
 }

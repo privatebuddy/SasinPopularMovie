@@ -63,22 +63,28 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
     @Override
     public void OnClickViewHolder(int viewHolderPosition) {
 
-        Log.d("R",String.valueOf(viewHolderPosition));
-
         Context context = MainActivity.this;
         Class destinationActivity = MovieInfromationActivity.class;
-        Intent startChildActivityIntent = new Intent(context, destinationActivity);
-//
-//        startChildActivityIntent.putExtra(Intent.EXTRA_TEXT, textEntered);
-        startActivity(startChildActivityIntent);
+        Intent childIntentData = new Intent(context, destinationActivity);
+        String movieSelectID = "0";
+        try {
+            movieSelectID = JSONMovie.GetSelectMovieID(viewHolderPosition);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        childIntentData.putExtra("MOVIE_ID",movieSelectID);
+
+        startActivity(childIntentData);
     }
+
 
     public class MovieQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            mLoadingIndicator.setVisibility(View.VISIBLE);
+            mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -94,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
 
         @Override
         protected void onPostExecute(String fetchAPIResult) {
-//            mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (fetchAPIResult != null && !fetchAPIResult.equals("")) {
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
                 JSONMovie = new JSONMovieConverter(fetchAPIResult);
@@ -120,13 +125,12 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
         int itemThatWasClickedId = item.getItemId();
 
         if (itemThatWasClickedId == R.id.action_sort_popular) {
-            mLoadingIndicator.setVisibility(View.VISIBLE);
             URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",0);
             new  MovieQueryTask().execute(movieAPI);
             return true;
         }
         if (itemThatWasClickedId == R.id.action_sort_top_rate) {
-            mLoadingIndicator.setVisibility(View.VISIBLE);
+
             URL movieAPI = MovieNetworkUtils.buildUrl("54673070422b0dffc26a43c1ca31fa94",1);
             new  MovieQueryTask().execute(movieAPI);
             return true;

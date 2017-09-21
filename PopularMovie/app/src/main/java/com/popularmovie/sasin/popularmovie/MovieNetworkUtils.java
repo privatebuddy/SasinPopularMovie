@@ -46,6 +46,26 @@ public class MovieNetworkUtils {
 
             return url;
         }
+
+    public static URL buildUrlIndividual(String apiKey,String movieID) {
+
+        String baseAPI = API_BASE.concat(movieID);
+
+        Uri builtUri = Uri.parse(baseAPI).buildUpon()
+                .appendQueryParameter(API_KEY, apiKey)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
         public static String getResponseFromHttpUrl(URL url) throws IOException {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             try {
