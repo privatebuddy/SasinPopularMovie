@@ -29,6 +29,7 @@ public class MovieInfromationActivity extends AppCompatActivity {
 
     private ProgressBar mLoadingIndicator;
     String responseData = null;
+    String API_KEY = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +40,14 @@ public class MovieInfromationActivity extends AppCompatActivity {
         movieDetail = (TextView) findViewById(R.id.movie_detail_detail);
         movieImage = (ImageView)  findViewById(R.id.movie_detail_poster);
         mLoadingIndicator = (ProgressBar)  findViewById(R.id.loading_indicator_movie);
-
+        API_KEY = getString(R.string.API_TOKEN);
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity.hasExtra("MOVIE_ID")) {
 
 
             String movieID = intentThatStartedThisActivity.getStringExtra("MOVIE_ID");
 
-            URL singleMovieAPI = MovieNetworkUtils.buildUrlIndividual(movieID);
+            URL singleMovieAPI = MovieNetworkUtils.buildUrlIndividual(API_KEY,movieID);
             new SingleMovieQueryTask().execute(singleMovieAPI);
         }
     }

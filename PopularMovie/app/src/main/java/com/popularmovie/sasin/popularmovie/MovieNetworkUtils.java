@@ -21,11 +21,9 @@ public class MovieNetworkUtils {
         final static String API_BASE =
                 "http://api.themoviedb.org/3/movie/";
 
-        protected static String USER_API_KEY = "54673070422b0dffc26a43c1ca31fa94";
-
         final static String API_KEY = "api_key";
 
-        public static URL buildUrl(int type) {
+        public static URL buildUrl(String USER_API_KEY,int type) {
 
             String baseAPI = null;
             if(type == popular) {
@@ -49,7 +47,7 @@ public class MovieNetworkUtils {
             return url;
         }
 
-    public static URL buildUrlIndividual(String movieID) {
+    public static URL buildUrlIndividual(String USER_API_KEY,String movieID) {
 
         String baseAPI = API_BASE.concat(movieID);
 
