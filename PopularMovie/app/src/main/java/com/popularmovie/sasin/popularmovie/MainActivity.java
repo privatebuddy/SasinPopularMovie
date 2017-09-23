@@ -28,12 +28,13 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
     JSONMovieConverter JSONMovie;
 
     String responseData = null;
+    String API_KEY = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        API_KEY = getString(R.string.API_TOKEN);
 
         moviePictureRecycleView = (RecyclerView) findViewById(R.id.movie_picture_recycle_view);
 
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
         moviePictureAdapter = new MovieRecycleViewAdapter(this);
 
 
-        URL movieAPI = MovieNetworkUtils.buildUrl(0);
+        URL movieAPI = MovieNetworkUtils.buildUrl(API_KEY,0);
         new  MovieQueryTask().execute(movieAPI);
 
         Log.d("R",movieAPI.toString());
@@ -130,13 +131,13 @@ public class MainActivity extends AppCompatActivity implements MovieRecycleViewA
         int itemThatWasClickedId = item.getItemId();
 
         if (itemThatWasClickedId == R.id.action_sort_popular) {
-            URL movieAPI = MovieNetworkUtils.buildUrl(0);
+            URL movieAPI = MovieNetworkUtils.buildUrl(API_KEY,0);
             new  MovieQueryTask().execute(movieAPI);
             return true;
         }
         if (itemThatWasClickedId == R.id.action_sort_top_rate) {
 
-            URL movieAPI = MovieNetworkUtils.buildUrl(1);
+            URL movieAPI = MovieNetworkUtils.buildUrl(API_KEY,1);
             new  MovieQueryTask().execute(movieAPI);
             return true;
         }
