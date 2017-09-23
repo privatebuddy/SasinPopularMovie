@@ -21,7 +21,10 @@ public class MovieNetworkUtils {
         final static String API_BASE =
                 "http://api.themoviedb.org/3/movie/";
 
-        protected static String USER_API_KEY = "54673070422b0dffc26a43c1ca31fa94";
+    /*TODO API KEY Require
+    Put API KEY HERE
+    * */
+        protected static String USER_API_KEY = "";
 
         final static String API_KEY = "api_key";
 
